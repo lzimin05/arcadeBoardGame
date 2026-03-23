@@ -121,7 +121,7 @@ module snake #(
             if (!game_over) begin
                 if (future_x == food_x && future_y == food_y) begin
                     score <= score + 1'b1;
-                    if (snake_len < 256) snake_len <= snake_len + 1'b1;
+                    if (snake_len < MAX_SNAKE) snake_len <= snake_len + 1'b1;
                     
                     cand_x = rng_value[ADDR_W-1:0] % GRID_W;
                     cand_y = rng_value[ADDR_H+3:4] % GRID_H;
@@ -130,7 +130,7 @@ module snake #(
                     for (int offset = 0; offset < GRID_CELLS; offset++) begin
                         if (!found_empty) begin
                             is_occupied = 1'b0;
-                            for (int i = 0; i < 256; i++) begin
+                            for (int i = 0; i < MAX_SNAKE; i++) begin
                                 if (i < snake_len) begin
                                     if (cand_x == snake_x[i] && cand_y == snake_y[i])
                                         is_occupied = 1'b1; // ячейка занята
@@ -184,9 +184,3 @@ module snake #(
     assign request_exit = 1'b0;
 
 endmodule
-
-
-
-
-
-
