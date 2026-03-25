@@ -24,7 +24,9 @@ module snake #(
     parameter GRID_H = 16,
     parameter SPEED_THRESHOLD = 25000000,
     parameter ADDR_W = $clog2(GRID_W),
-    parameter ADDR_H = $clog2(GRID_H)
+    parameter ADDR_H = $clog2(GRID_H),
+    parameter GRID_CELLS = GRID_W * GRID_H,
+    parameter MAX_SNAKE = GRID_CELLS-1
 )(
     input  logic clk,
     input  logic rst,
@@ -37,13 +39,11 @@ module snake #(
     output logic game_over,
     output logic [7:0] score,
     output logic [8:0] snake_len,
-    output logic [ADDR_W-1:0] snake_x [0:255],
-    output logic [ADDR_H-1:0] snake_y [0:255],
+    output logic [ADDR_W-1:0] snake_x [0:MAX_SNAKE],
+    output logic [ADDR_H-1:0] snake_y [0:MAX_SNAKE],
     output logic [ADDR_W-1:0] food_x,
     output logic [ADDR_H-1:0] food_y
 );
-    localparam GRID_CELLS = GRID_W * GRID_H;
-    localparam MAX_SNAKE = GRID_CELLS;
     
     logic game_tick;
     logic signed [1:0] dir_x, dir_y;
@@ -121,7 +121,11 @@ module snake #(
             if (!game_over) begin
                 if (future_x == food_x && future_y == food_y) begin
                     score <= score + 1'b1;
-                    if (snake_len < MAX_SNAKE) snake_len <= snake_len + 1'b1;
+                    if (snake_len < MAX_SNAKE) begin
+                        snake_len <= snake_len + 1'b1;
+                    end else begin
+                        game_over <= 1'b1;  //WIN
+                    end
                     
                     cand_x = rng_value[ADDR_W-1:0] % GRID_W;
                     cand_y = rng_value[ADDR_H+3:4] % GRID_H;
@@ -184,3 +188,9 @@ module snake #(
     assign request_exit = 1'b0;
 
 endmodule
+
+
+
+
+
+

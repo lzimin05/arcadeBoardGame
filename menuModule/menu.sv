@@ -20,7 +20,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module menu(
+module menu #(
+    parameter MAX_RECORD_FOR_SNAKE = 255,
+    parameter MAX_RECORD_FOR_TETRIS = 1000,
+    parameter ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1),
+    parameter ADDR_MAX_RECORD_FOR_TETRIS = $clog2(MAX_RECORD_FOR_TETRIS + 1)
+)(
 	input logic clk,
 	input logic rst,
 
@@ -35,6 +40,15 @@ module menu(
 	input logic snake_exit,
 	input logic tetris_over,
 	input logic tetris_exit,
+	
+	//рекорд игры, последний трай
+	input logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0]snake_record,
+    input logic [ADDR_MAX_RECORD_FOR_TETRIS-1:0]tetris_record,
+    
+    //лучший рекорд, выводить
+    output logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0]the_best_snake_record,
+    output logic [ADDR_MAX_RECORD_FOR_TETRIS-1:0]the_best_tetris_record, 
+    
 
 	//выбор игр и управления ими
 	output logic run_snake,
@@ -65,6 +79,8 @@ module menu(
 			selected_game <= 0;
 			run_snake <= 0;
 			run_tetris <= 0;
+			the_best_snake_record <= 0;
+			the_best_tetris_record <= 0;
 		end else begin
 			status <= next_status;
 			unique case (status)
@@ -98,18 +114,32 @@ module menu(
 				end
 				STATUS_PLAY: begin
 					unique case (selected_game)
-        					0: begin
+        				0: begin
 							run_snake  <= 1;
 						end
-        					1: begin
+        				1: begin
 							run_tetris <= 1;
 						end
-        					default: ;
+        				default: ;
    					endcase	
 				end
 				STATUS_GAMEOVER: begin
-					run_snake <= 0;
-					run_tetris <= 0;
+				    unique case (selected_game)
+				        0: begin
+				            if(the_best_snake_record < snake_record) begin
+				                the_best_snake_record <= snake_record;
+				            end
+				            run_snake <= 0;
+				            
+				        end
+				        1: begin
+				            if(the_best_tetris_record < tetris_record) begin
+				                the_best_tetris_record <= tetris_record;
+				            end
+				            run_tetris <= 0;
+				        end
+				        default: ;
+                    endcase
 				end
 				default: ;
 			endcase

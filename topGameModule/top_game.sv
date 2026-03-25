@@ -20,14 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-`timescale 1ns / 1ps
-
 module top_game #(
     parameter SNAKE_GRID_W = 16,
     parameter SNAKE_GRID_H = 16,
     parameter SNAKE_SPEED  = 25000000,
     parameter SNAKE_ADDR_W = $clog2(SNAKE_GRID_W),
-    parameter SNAKE_ADDR_H = $clog2(SNAKE_GRID_H)
+    parameter SNAKE_ADDR_H = $clog2(SNAKE_GRID_H),
+    parameter MAX_RECORD_FOR_SNAKE = 255,
+    parameter ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1)
 )(
     input  logic clk,
     input  logic rst,
@@ -45,8 +45,10 @@ module top_game #(
     output logic [SNAKE_ADDR_H-1:0] snake_y [0:255],
     output logic [SNAKE_ADDR_W-1:0] food_x,
     output logic [SNAKE_ADDR_H-1:0] food_y,
-    output logic [8:0]  snake_len
+    output logic [8:0]  snake_len,
+    output logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0] the_best_snake_record
 );
+
 
     logic run_snake;
     logic snake_over;
@@ -54,10 +56,11 @@ module top_game #(
     logic snake_rst;
     logic [1:0] selected_game;
     
-    // Сброс змейки при системном rst или когда мы в меню
     assign snake_rst = rst || (system_status == 2'b00); 
 
-    menu menu_inst (
+    menu #(
+        .MAX_RECORD_FOR_SNAKE(MAX_RECORD_FOR_SNAKE)
+    ) menu_inst (
         .clk(clk),
         .rst(rst),
         .btn_up(btn_up),
@@ -68,6 +71,10 @@ module top_game #(
         .snake_exit(snake_exit),
         .tetris_over(1'b0),
         .tetris_exit(1'b0),
+        .snake_record(score),
+        .tetris_record(11'b0),
+        .the_best_snake_record(the_best_snake_record),
+        .the_best_tetris_record(),
         .run_snake(run_snake),
         .run_tetris(),
         .selected_game(selected_game),
@@ -100,5 +107,6 @@ module top_game #(
     );
 
 endmodule
+
 
 

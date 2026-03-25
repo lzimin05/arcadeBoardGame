@@ -27,6 +27,8 @@ module top_game_tb();
     localparam ADDR_H      = $clog2(GRID_HEIGHT);
     localparam CLK_PERIOD  = 10; 
     localparam TEST_SPEED  = 40;
+    localparam MAX_RECORD_FOR_SNAKE = 255;
+    localparam ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1);
 
     logic clk = 0;
     logic reset;
@@ -43,7 +45,9 @@ module top_game_tb();
     logic [ADDR_W-1:0] food_pos_x, food_pos_y;
     logic [ADDR_W-1:0] snake_x_array [0:255];
     logic [ADDR_H-1:0] snake_y_array [0:255];
+    logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0] best_snake_score;
 
+    // Внутренние сигналы для отладки
     logic debug_snake_run;
     logic debug_snake_tick;
     logic debug_snake_game_over;
@@ -58,7 +62,8 @@ module top_game_tb();
     top_game #(
         .SNAKE_GRID_W(GRID_WIDTH),
         .SNAKE_GRID_H(GRID_HEIGHT),
-        .SNAKE_SPEED (TEST_SPEED)
+        .SNAKE_SPEED (TEST_SPEED),
+        .MAX_RECORD_FOR_SNAKE(MAX_RECORD_FOR_SNAKE)
     ) dut (
         .clk(clk),
         .rst(reset),
@@ -74,7 +79,8 @@ module top_game_tb();
         .food_x(food_pos_x),
         .food_y(food_pos_y),
         .snake_x(snake_x_array),
-        .snake_y(snake_y_array)
+        .snake_y(snake_y_array),
+        .the_best_snake_record(best_snake_score)
     );
 
     always #(CLK_PERIOD/2) clk = ~clk;
@@ -87,14 +93,14 @@ module top_game_tb();
         #(CLK_PERIOD * 10);
 
         $display("[%0t] МЕНЮ: Листаем вниз/вверх...", $time);
-        button_down = 1; #(CLK_PERIOD * 5); button_down = 0;
+        button_down = 1; #(CLK_PERIOD * 15); button_down = 0;
         #(CLK_PERIOD * 100);
         
-        button_up = 1;   #(CLK_PERIOD * 5); button_up = 0;
+        button_up = 1;   #(CLK_PERIOD * 15); button_up = 0;
         #(CLK_PERIOD * 100);
 
         $display("[%0t] МЕНЮ: Выбираем Змейку...", $time);
-        button_select = 1; #(CLK_PERIOD * 5); button_select = 0;
+        button_select = 1; #(CLK_PERIOD * 15); button_select = 0;
 
         wait(system_status == 2'b01);
         $display("[%0t] ИГРА: Запущена. Голова в (%d, %d)", $time, snake_x_array[0], snake_y_array[0]);
@@ -127,12 +133,13 @@ module top_game_tb();
         
         wait(debug_snake_game_over == 1'b1);
         $display("[%0t] СОБЫТИЕ: Змейка погибла (Game Over)!", $time);
+        $display("[%0t] РЕКОРД: Текущий лучший результат: %d", $time, best_snake_score);
         button_left = 0;
 
         // 5. Возврат в меню
         #(CLK_PERIOD * 100);
         $display("[%0t] МЕНЮ: Возврат на главный экран...", $time);
-        button_home = 1; #(CLK_PERIOD * 5); button_home = 0;
+        button_home = 1; #(CLK_PERIOD * 15); button_home = 0;
         
         wait(system_status == 2'b00);
         $display("[%0t] СТАТУС: В меню. Симуляция успешно завершена.", $time);
