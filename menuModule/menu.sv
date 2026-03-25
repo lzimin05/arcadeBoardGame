@@ -24,7 +24,8 @@ module menu #(
     parameter MAX_RECORD_FOR_SNAKE = 255,
     parameter MAX_RECORD_FOR_TETRIS = 1000,
     parameter ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1),
-    parameter ADDR_MAX_RECORD_FOR_TETRIS = $clog2(MAX_RECORD_FOR_TETRIS + 1)
+    parameter ADDR_MAX_RECORD_FOR_TETRIS = $clog2(MAX_RECORD_FOR_TETRIS + 1),
+    parameter THRESHOLD = 8'b00010000
 )(
 	input logic clk,
 	input logic rst,
@@ -66,7 +67,7 @@ module menu #(
 	clkDelay #(.WIDTH(8)) btnDelay (
 		.clk(clk),
 		.rst(rst),
-		.threshold(8'b00000100),
+		.threshold(THRESHOLD),
 		.clk_delay(clk_delay)
 	);
 
@@ -173,16 +174,3 @@ module menu #(
 		endcase
 	end
 endmodule
-
-/*
-reg c_reg // 
-reg[2:0] // 000-down; 001-up; 010-left; 011-right; 100-static
-
-menu menuU(
-	.clc(clc_main), 
-	.rst(rst), 
-	.btn_up(reg == 2'b01), 
-	.btn_down(reg == 2'b00),
-	
-)
-*/
