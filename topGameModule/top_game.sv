@@ -27,7 +27,8 @@ module top_game #(
     parameter SNAKE_ADDR_W = $clog2(SNAKE_GRID_W),
     parameter SNAKE_ADDR_H = $clog2(SNAKE_GRID_H),
     parameter MAX_RECORD_FOR_SNAKE = 255,
-    parameter ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1)
+    parameter ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1),
+	 parameter MAX_SNAKE_TOP = 63 // добавил из-за некомпилируемости проекта
 )(
     input  logic clk,
     input  logic rst,
@@ -40,15 +41,18 @@ module top_game #(
     input  logic btn_home,
     
     output logic [1:0]  system_status,
-    output logic [7:0]  score,
-    output logic [SNAKE_ADDR_W-1:0] snake_x [0:255],
-    output logic [SNAKE_ADDR_H-1:0] snake_y [0:255],
-    output logic [SNAKE_ADDR_W-1:0] food_x,
-    output logic [SNAKE_ADDR_H-1:0] food_y,
-    output logic [8:0]  snake_len,
-    output logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0] the_best_snake_record
-);
-
+    output logic [7:0]  score_out,
+	 output logic game_over_led
+);  
+	// Переместил сюда, так как изначально они были внешними пинами. На кой хер выводить координаты куда-то
+	// вне плиса - непонятно. Выдавало ошибку 
+	// Error (169282): There are 547 IO output pads in the design, but only 85 IO output pad locations available on the device.
+	 logic [SNAKE_ADDR_W-1:0] internal_snake_x [0:MAX_SNAKE_TOP];
+    logic [SNAKE_ADDR_H-1:0] internal_snake_y [0:MAX_SNAKE_TOP];
+    logic [SNAKE_ADDR_W-1:0] internal_food_x;
+    logic [SNAKE_ADDR_H-1:0] internal_food_y;
+    logic [8:0]  internal_snake_len;
+    logic [7:0]  current_score;
 
     logic run_snake;
     logic snake_over;
@@ -56,6 +60,8 @@ module top_game #(
     logic snake_rst;
     logic [1:0] selected_game;
     
+    assign score_out = current_score;
+    assign game_over_led = snake_over;
     assign snake_rst = rst || (system_status == 2'b00); 
 
     menu #(
@@ -71,9 +77,9 @@ module top_game #(
         .snake_exit(snake_exit),
         .tetris_over(1'b0),
         .tetris_exit(1'b0),
-        .snake_record(score),
+        .snake_record(current_score),
         .tetris_record(11'b0),
-        .the_best_snake_record(the_best_snake_record),
+        .the_best_snake_record(),
         .the_best_tetris_record(),
         .run_snake(run_snake),
         .run_tetris(),
@@ -87,7 +93,8 @@ module top_game #(
         .GRID_H(SNAKE_GRID_H),
         .SPEED_THRESHOLD(SNAKE_SPEED),
         .ADDR_W(SNAKE_ADDR_W),
-        .ADDR_H(SNAKE_ADDR_H)
+        .ADDR_H(SNAKE_ADDR_H),
+		.MAX_SNAKE(MAX_SNAKE_TOP) 
     ) snake_inst (
         .clk(clk),
         .rst(snake_rst),
@@ -98,13 +105,20 @@ module top_game #(
         .btn_right(btn_right),
         .request_exit(snake_exit),
         .game_over(snake_over),
-        .score(score),
-        .snake_len(snake_len),
-        .snake_x(snake_x),
-        .snake_y(snake_y),
-        .food_x(food_x),
-        .food_y(food_y)
+        .score(current_score),
+        .snake_len(internal_snake_len),
+        .snake_x(internal_snake_x),
+        .snake_y(internal_snake_y),
+        .food_x(internal_food_x),
+        .food_y(internal_food_y)
     );
+
+    // Лёня
+    // display_driver disp (
+    //     .snake_x(internal_snake_x),
+    //     .snake_y(internal_snake_y),
+    //     ...
+    // );
 
 endmodule
 

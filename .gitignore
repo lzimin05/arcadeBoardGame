@@ -1,0 +1,36 @@
+# --- Quartus Temporary Files ---
+db/
+incremental_db/
+output_files/
+simulation/
+greybox_tmp/
+hc_output/
+hdl_info/
+*.jdi
+*.sld
+*.rpt
+*.summary
+*.msg
+*.flow.rpt
+*.map.rpt
+*.map.summary
+*.done
+*.smsg
+*.pin
+*.sof
+*.pof
+*.qws
+
+# --- Backups and History ---
+*.bak
+*.orig
+*.sv.bak
+*~
+# --- System/OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Logic Analyzer / Debug ---
+stp1_auto_stripped.stp
+ev_db/
+

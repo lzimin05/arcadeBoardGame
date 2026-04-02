@@ -25,8 +25,8 @@ module snake #(
     parameter SPEED_THRESHOLD = 25000000,
     parameter ADDR_W = $clog2(GRID_W),
     parameter ADDR_H = $clog2(GRID_H),
-    parameter GRID_CELLS = GRID_W * GRID_H,
-    parameter MAX_SNAKE = GRID_CELLS-1
+	 // parameter GRID_CELLS = GRID_W * GRID_H,
+    parameter MAX_SNAKE = 63 // убрал GRID_CELLS, так как просто не компилился проект при =256 ;(
 )(
     input  logic clk,
     input  logic rst,
@@ -97,78 +97,13 @@ module snake #(
             dir_y      <= 2'sb00;
             next_dir_x <= 2'sb01;
             next_dir_y <= 2'sb00;
-        end else if (run && game_tick && !game_over) begin
-            dir_x <= next_dir_x;
-            dir_y <= next_dir_y;
-            
-            // Проверка столкновения (Стены и Хвоста)
-            if ((next_dir_x == 2'sb11 && snake_x[0] == 0) || 
-                (next_dir_x == 2'sb01 && snake_x[0] == GRID_W - 1) ||
-                (next_dir_y == 2'sb11 && snake_y[0] == 0) || 
-                (next_dir_y == 2'sb01 && snake_y[0] == GRID_H - 1)) 
-            begin
-                game_over <= 1'b1;
+            // Инициализация хвоста для предотвращения ошибок
+            for (int i = 1; i <= MAX_SNAKE; i++) begin
+                snake_x[i] <= '0;
+                snake_y[i] <= '0;
             end
-
-            for (int i = 1; i < GRID_CELLS; i++) begin
-                if (i < snake_len) begin
-                    if (future_x == snake_x[i] && future_y == snake_y[i])
-                        game_over <= 1'b1;
-                end
-            end
-            
-            // ЕДА
-            if (!game_over) begin
-                if (future_x == food_x && future_y == food_y) begin
-                    score <= score + 1'b1;
-                    if (snake_len < MAX_SNAKE) begin
-                        snake_len <= snake_len + 1'b1;
-                    end else begin
-                        game_over <= 1'b1;  //WIN
-                    end
-                    
-                    cand_x = rng_value[ADDR_W-1:0] % GRID_W;
-                    cand_y = rng_value[ADDR_H+3:4] % GRID_H;
-                    found_empty = 1'b0;
-
-                    for (int offset = 0; offset < GRID_CELLS; offset++) begin
-                        if (!found_empty) begin
-                            is_occupied = 1'b0;
-                            for (int i = 0; i < MAX_SNAKE; i++) begin
-                                if (i < snake_len) begin
-                                    if (cand_x == snake_x[i] && cand_y == snake_y[i])
-                                        is_occupied = 1'b1; // ячейка занята
-                                end
-                            end
-                            
-                            if (!is_occupied) begin
-                                food_x <= cand_x;
-                                food_y <= cand_y;
-                                found_empty = 1'b1;
-                            end else begin
-                                if (cand_x < GRID_W - 1) cand_x++;
-                                else begin
-                                    cand_x = '0;
-                                    cand_y = (cand_y < GRID_H - 1) ? cand_y + 1'b1 : '0;
-                                end
-                            end
-                        end
-                    end
-                end
-                //Движение туловища
-                for (int i = snake_len-1; i > 0; i--) begin
-                    snake_x[i] <= snake_x[i-1];
-                    snake_y[i] <= snake_y[i-1];
-                end
-                snake_x[0] <= future_x;
-                snake_y[0] <= future_y;
-            end
-        end
-    end
-
-    // Управление (с проверкой на 180)
-    always_ff @(posedge clk) begin
-        if (run && !game_over) begin
+        end else if (run && !game_over) begin
+            // Управление (ПЕРЕНЕСЕНО СЮДА, ИБО КТО_ТО ПИШЕТ В ОДНУ ПЕРЕМЕННУЮ В РАЗНЫХ ALWAYS)
             if (btn_up && (snake_len == 1 || dir_y != 2'sb11)) begin 
                 next_dir_x <= 2'sb00; 
                 next_dir_y <= 2'sb01; 
@@ -182,15 +117,89 @@ module snake #(
                 next_dir_x <= 2'sb01; 
                 next_dir_y <= 2'sb00; 
             end
+
+            // Основная логика игры по тику таймера
+            if (game_tick) begin
+                dir_x <= next_dir_x;
+                dir_y <= next_dir_y;
+                
+                // Проверка столкновения (Стены и Хвоста)
+                if ((next_dir_x == 2'sb11 && snake_x[0] == 0) || 
+                    (next_dir_x == 2'sb01 && snake_x[0] == GRID_W - 1) ||
+                    (next_dir_y == 2'sb11 && snake_y[0] == 0) || 
+                    (next_dir_y == 2'sb01 && snake_y[0] == GRID_H - 1)) 
+                begin
+                    game_over <= 1'b1;
+                end
+
+                for (int i = 1; i <= MAX_SNAKE; i++) begin 
+                    if (i < snake_len) begin
+                        if (future_x == snake_x[i] && future_y == snake_y[i])
+                            game_over <= 1'b1;
+                    end
+                end
+                
+                // ЕДА
+                if (!game_over) begin
+                    if (future_x == food_x && future_y == food_y) begin
+                        score <= score + 1'b1;
+                        if (snake_len <= MAX_SNAKE) begin 
+                            snake_len <= snake_len + 1'b1;
+                        end else begin
+                            game_over <= 1'b1;  //WIN
+                        end
+                        
+                        cand_x = rng_value[ADDR_W-1:0] % GRID_W;
+                        cand_y = rng_value[ADDR_H+3:4] % GRID_H;
+                        found_empty = 1'b1; // По умолчанию считаем, что нашли
+
+                        /* 
+                           ВНИМАНИЕ: Цикл поиска еды закомментирован, так как он вызывает ошибку
+                           Error (170011): Design contains 14749 blocks (limit 6272).
+                           Без этого цикла проект влезает в ПЛИС.
+                        */
+                        /*
+                        for (int offset = 0; offset < 32; offset++) begin
+                            if (!found_empty) begin
+                                is_occupied = 1'b0;
+                                for (int i = 0; i < MAX_SNAKE; i++) begin
+                                    if (i < snake_len) begin
+                                        if (cand_x == snake_x[i] && cand_y == snake_y[i])
+                                            is_occupied = 1'b1; // ячейка занята
+                                    end
+                                end
+                                
+                                if (!is_occupied) begin
+                                    food_x <= cand_x;
+                                    food_y <= cand_y;
+                                    found_empty = 1'b1;
+                                end else begin
+                                    if (cand_x < GRID_W - 1) cand_x++;
+                                    else begin
+                                        cand_x = '0;
+                                        cand_y = (cand_y < GRID_H - 1) ? cand_y + 1'b1 : '0;
+                                    end
+                                end
+                            end
+                        end
+                        */
+                        // Ставим еду по первым выпавшим координатам
+                        food_x <= cand_x;
+                        food_y <= cand_y;
+
+                    end
+                    //Движение туловища
+                    for (int i = MAX_SNAKE; i > 0; i--) begin 
+                            snake_x[i] <= snake_x[i-1];
+                            snake_y[i] <= snake_y[i-1];
+                    end
+                    snake_x[0] <= future_x;
+                    snake_y[0] <= future_y;
+                end
+            end
         end
     end
 
     assign request_exit = 1'b0;
 
 endmodule
-
-
-
-
-
-
