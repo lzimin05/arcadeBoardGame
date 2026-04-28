@@ -38,26 +38,16 @@
 
 
 set_global_assignment -name FAMILY "Cyclone IV E"
-set_global_assignment -name DEVICE EP4CE6E22C8
+set_global_assignment -name DEVICE EP4CE22F17C6
 set_global_assignment -name TOP_LEVEL_ENTITY top_game
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 20.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:32:28  APRIL 02, 2026"
-set_global_assignment -name LAST_QUARTUS_VERSION "20.1.0 Lite Edition"
-set_global_assignment -name SYSTEMVERILOG_FILE topGameModule/top_game.sv
-set_global_assignment -name SYSTEMVERILOG_FILE snakeModule/snake_tb.sv
-set_global_assignment -name SYSTEMVERILOG_FILE snakeModule/snake.sv
-set_global_assignment -name SYSTEMVERILOG_FILE randomizeLFSRModule/randomizer_lfsr_tb.sv
-set_global_assignment -name SYSTEMVERILOG_FILE randomizeLFSRModule/randomizer_lfsr.sv
-set_global_assignment -name SYSTEMVERILOG_FILE menuModule/menu_tb.sv
-set_global_assignment -name SYSTEMVERILOG_FILE menuModule/menu.sv
-set_global_assignment -name SYSTEMVERILOG_FILE clkDelayModule/clkDelay_tb.sv
-set_global_assignment -name SYSTEMVERILOG_FILE clkDelayModule/clkDelay.sv
+set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Standard Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
-set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
-set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (SystemVerilog)"
+set_global_assignment -name EDA_SIMULATION_TOOL "Questa Altera FPGA (SystemVerilog)"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "SYSTEMVERILOG HDL" -section_id eda_simulation
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_timing
@@ -67,5 +57,45 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_location_assignment PIN_A15 -to leds[0]
+set_location_assignment PIN_A13 -to leds[1]
+set_location_assignment PIN_B13 -to leds[2]
+set_location_assignment PIN_A11 -to leds[3]
+set_location_assignment PIN_D1 -to leds[4]
+set_location_assignment PIN_F3 -to leds[5]
+set_location_assignment PIN_E1 -to inrst
+set_location_assignment PIN_E6 -to buttons_in[5]
+set_location_assignment PIN_D11 -to buttons_in[4]
+set_location_assignment PIN_F8 -to buttons_in[3]
+set_location_assignment PIN_E8 -to buttons_in[2]
+set_location_assignment PIN_E7 -to buttons_in[1]
+set_location_assignment PIN_D8 -to buttons_in[0]
+set_location_assignment PIN_R8 -to clk
+set_location_assignment PIN_B11 -to screenRst
+set_location_assignment PIN_C11 -to screenDIn
+set_location_assignment PIN_E10 -to screenDC
+set_location_assignment PIN_A12 -to screenCE
+set_location_assignment PIN_E11 -to screenClk
+
+set_global_assignment -name SDC_FILE arcadeBoardGame.out.sdc
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/SPI.sv
+set_global_assignment -name SYSTEMVERILOG_FILE topGameModule/ButtonDriver.sv
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/NumberProvider.sv
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/initModule.sv
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/GPUControlDevice.sv
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/GPU.sv
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/drawModule.sv
+set_global_assignment -name SYSTEMVERILOG_FILE GPU/BinDec.sv
+set_global_assignment -name SYSTEMVERILOG_FILE topGameModule/top_game.sv
+set_global_assignment -name SYSTEMVERILOG_FILE snakeModule/snake_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE snakeModule/snake.sv
+set_global_assignment -name SYSTEMVERILOG_FILE randomizeLFSRModule/randomizer_lfsr_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE randomizeLFSRModule/randomizer_lfsr.sv
+set_global_assignment -name SYSTEMVERILOG_FILE menuModule/menu_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE menuModule/menu.sv
+set_global_assignment -name SYSTEMVERILOG_FILE clkDelayModule/clkDelay_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE clkDelayModule/clkDelay.sv
 set_global_assignment -name SYSTEMVERILOG_FILE tetrisModule/tetris.sv
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
