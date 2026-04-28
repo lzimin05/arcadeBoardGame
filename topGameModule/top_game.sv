@@ -51,6 +51,10 @@ module top_game #(
 	 logic [31:0]dataSnake;
 	 logic commandCSSnake;
 	 
+	 logic [2:0]commandTetris;
+    logic [31:0]dataTetris;
+    logic commandCSTetris;
+	 
 	 always_comb begin
 		if (commandCSMenu) begin
 			command = commandMenu;
@@ -60,6 +64,10 @@ module top_game #(
 			command = commandSnake;
 			data = dataSnake;
 			commandCS = 1'b1;
+		end else if (commandCSTetris) begin
+        		command = commandTetris; 
+        		data = dataTetris; 
+        		commandCS = 1'b1;
 		end else begin
 			commandCS = 1'b0;
 			command = 'Z;
@@ -151,5 +159,21 @@ module top_game #(
 		  .command(commandSnake),
 		  .data(dataSnake),
 		  .commandCS(commandCSSnake)
+    );
+	 
+	     tetris tetris_inst (
+        .clk(clk),
+        .rst(tetris_rst),
+        .run(run_tetris),
+        .btn_up(buttons[5]),    
+        .btn_down(buttons[4]),  
+        .btn_left(buttons[1]),  
+        .btn_right(buttons[0]), 
+        .commandAck(commandAck),
+        .game_over(tetris_over),
+        .score(score_tetris),
+        .command(commandTetris),
+        .data(dataTetris),
+        .commandCS(commandCSTetris)
     );
 endmodule
