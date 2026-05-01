@@ -36,6 +36,12 @@ module top_game #(
     logic snake_over;
     logic snake_exit;
     logic snake_rst;
+	 
+	 logic run_tetris;
+    logic tetris_over;
+    logic tetris_exit;
+    logic tetris_rst;
+	 
     logic [1:0] selected_game;
 	 
 	 logic [2:0]command;
@@ -70,8 +76,8 @@ module top_game #(
         		commandCS = 1'b1;
 		end else begin
 			commandCS = 1'b0;
-			command = 'Z;
-			data = 'Z;
+			command = '0;
+			data = '0;
 		end
 	 end
 	 
@@ -124,7 +130,7 @@ module top_game #(
         .the_best_snake_record(the_best_snake_record),
         .the_best_tetris_record(),
         .run_snake(run_snake),
-        .run_tetris(),
+        .run_tetris(run_tetris),
         .selected_game(selected_game),
         .system_status(system_status),
         .clk_delay_tb(),
