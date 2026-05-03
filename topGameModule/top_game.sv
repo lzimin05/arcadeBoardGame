@@ -12,14 +12,21 @@ module top_game #(
     input logic clk,
     input logic inrst,
 	 
-	 input logic [5:0]buttons_in,
-	 output logic [5:0]leds,
+	input logic [5:0]buttons_in,
+	output logic [5:0]leds,
 	
-	 output logic screenRst,
-	 output logic screenClk,
-	 output logic screenCE,
-	 output logic screenDC,
-	 output logic screenDIn 
+	output logic screenRst,
+	output logic screenClk,
+	output logic screenCE,
+	output logic screenDC,
+	output logic screenDIn,
+
+    input  logic    SELECT,
+    input  logic    HOME,
+    output logic    ADC_CS_N,
+    output logic    ADC_SCLK,
+    output logic    ADC_SADDR,
+    input  logic    ADC_SDAT
 );
 
     logic [SNAKE_ADDR_W-1:0] internal_snake_x [0:SNAKE_GRID_W * SNAKE_GRID_H - 1];
@@ -27,7 +34,7 @@ module top_game #(
     logic [SNAKE_ADDR_W-1:0] internal_food_x;
     logic [SNAKE_ADDR_H-1:0] internal_food_y;
 	 
-	 logic [4:0]  system_status;
+	logic [4:0]  system_status;
     logic [7:0]  score;
     logic [8:0]  snake_len;
     logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0] the_best_snake_record;
@@ -37,27 +44,27 @@ module top_game #(
     logic snake_exit;
     logic snake_rst;
 	 
-	 logic run_tetris;
+	logic run_tetris;
     logic tetris_over;
     logic tetris_exit;
     logic tetris_rst;
 	 
     logic [1:0] selected_game;
 	 
-	 logic [2:0]command;
-	 logic [31:0]data;
-	 logic commandCS;
-	 logic commandAck;
+	logic [2:0]command;
+	logic [31:0]data;
+	logic commandCS;
+	logic commandAck;
 	 
-	 logic [2:0]commandMenu;
-	 logic [31:0]dataMenu;
-	 logic commandCSMenu;
+	logic [2:0]commandMenu;
+	logic [31:0]dataMenu;
+	logic commandCSMenu;
 	 
-	 logic [2:0]commandSnake;
-	 logic [31:0]dataSnake;
-	 logic commandCSSnake;
+	logic [2:0]commandSnake;
+	logic [31:0]dataSnake;
+	logic commandCSSnake;
 	 
-	 logic [2:0]commandTetris;
+	logic [2:0]commandTetris;
     logic [31:0]dataTetris;
     logic commandCSTetris;
 	 
@@ -81,8 +88,11 @@ module top_game #(
 		end
 	 end
 	 
-	 logic rst;
-	 
+	logic rst;
+
+    logic select; //кнопка джойстика
+    logic home;   //внешняя 
+
 	 ButtonDriver bd0(.rst(rst), .clk(clk), .in(inrst), .out(rst));
 	 ButtonDriver bd1(.rst(rst), .clk(clk), .in(buttons_in[0]), .out(leds[0]));
 	 ButtonDriver bd2(.rst(rst), .clk(clk), .in(buttons_in[1]), .out(leds[1]));
@@ -90,12 +100,15 @@ module top_game #(
 	 ButtonDriver bd4(.rst(rst), .clk(clk), .in(buttons_in[3]), .out(leds[3]));
 	 ButtonDriver bd5(.rst(rst), .clk(clk), .in(buttons_in[4]), .out(leds[4]));
 	 ButtonDriver bd6(.rst(rst), .clk(clk), .in(buttons_in[5]), .out(leds[5]));
+
+    ButtonDriver select_btn(.rst(rst), .clk(clk), in(SELECT), .out(select));
+    ButtonDriver home_btn(.rst(rst), .clk(clk), in(HOME), .out(home));
     
     assign snake_rst = rst || (system_status == 5'd0 || system_status == 5'd2); 
 	 
 	 logic [5:0]buttons;
 	 assign buttons = leds;
-	 
+
 	 GPU screen(
 		.rst(rst),
 		.clk(clk),
@@ -182,4 +195,20 @@ module top_game #(
         .data(dataTetris),
         .commandCS(commandCSTetris)
     );
+
+    logic [7:0] UP, DOWN, LEFT, RIGHT; //UP[7],DOWN[7],RIGHT[7],LEFT[7]
+
+    joystick_adc u_adc (
+        .CLOCK_50(clk),
+        .RESET(rst),
+        .ADC_CS_N(ADC_CS_N),
+        .ADC_SCLK(ADC_SCLK),
+        .ADC_SADDR(ADC_SADDR),
+        .ADC_SDAT(ADC_SDAT),
+		.UP(UP),
+		.DOWN(DOWN),
+		.LEFT(LEFT),
+		.RIGHT(RIGHT)
+    );
+
 endmodule

@@ -76,6 +76,12 @@ set_location_assignment PIN_C11 -to screenDIn
 set_location_assignment PIN_E10 -to screenDC
 set_location_assignment PIN_A12 -to screenCE
 set_location_assignment PIN_E11 -to screenClk
+set_location_assignment PIN_A10 -to ADC_CS_N
+set_location_assignment PIN_B10 -to ADC_SADDR
+set_location_assignment PIN_B14 -to ADC_SCLK
+set_location_assignment PIN_A9 -to ADC_SDAT
+set_location_assignment PIN_E15 -to SELECT
+set_location_assignment PIN_M16 -to HOME
 
 set_global_assignment -name SDC_FILE arcadeBoardGame.out.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE GPU/SPI.sv
@@ -96,4 +102,5 @@ set_global_assignment -name SYSTEMVERILOG_FILE menuModule/menu.sv
 set_global_assignment -name SYSTEMVERILOG_FILE clkDelayModule/clkDelay_tb.sv
 set_global_assignment -name SYSTEMVERILOG_FILE clkDelayModule/clkDelay.sv
 set_global_assignment -name SYSTEMVERILOG_FILE tetrisModule/tetris.sv
+set_global_assignment -name SYSTEMVERILOG_FILE joystickModule/joystick_adc.sv
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
