@@ -6,6 +6,7 @@ simulation/
 greybox_tmp/
 hc_output/
 hdl_info/
+*.svf
 *.jdi
 *.sld
 *.rpt

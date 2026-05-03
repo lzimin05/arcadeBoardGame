@@ -35,7 +35,8 @@ module top_game #(
     logic [SNAKE_ADDR_H-1:0] internal_food_y;
 	 
 	logic [4:0]  system_status;
-    logic [7:0]  score;
+    logic [11:0]  score;
+    
     logic [8:0]  snake_len;
     logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0] the_best_snake_record;
 

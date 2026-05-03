@@ -3,8 +3,8 @@
 module menu #(
     parameter MAX_RECORD_FOR_SNAKE = 63,
     parameter MAX_RECORD_FOR_TETRIS = 1000,
-    parameter ADDR_MAX_RECORD_FOR_SNAKE = $clog2(MAX_RECORD_FOR_SNAKE + 1),
-    parameter ADDR_MAX_RECORD_FOR_TETRIS = $clog2(MAX_RECORD_FOR_TETRIS + 1),
+    parameter ADDR_MAX_RECORD_FOR_SNAKE = 11,
+    parameter ADDR_MAX_RECORD_FOR_TETRIS = 11,
     parameter THRESHOLD = 28'd30000000
 )(
 	input logic clk,
@@ -24,12 +24,12 @@ module menu #(
 	input logic commandAck,
 	
 	//рекорд игры, последний трай
-	input logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0]snake_record,
-	 input logic [ADDR_MAX_RECORD_FOR_TETRIS-1:0]tetris_record,
+	input logic [ADDR_MAX_RECORD_FOR_SNAKE:0]snake_record,
+	 input logic [ADDR_MAX_RECORD_FOR_TETRIS:0]tetris_record,
 	 
 	 //лучший рекорд, выводить
-	 output logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0]the_best_snake_record,
-	 output logic [ADDR_MAX_RECORD_FOR_TETRIS-1:0]the_best_tetris_record, 
+	 output logic [ADDR_MAX_RECORD_FOR_SNAKE:0]the_best_snake_record,
+	 output logic [ADDR_MAX_RECORD_FOR_TETRIS:0]the_best_tetris_record, 
     
 
 	//выбор игр и управления ими

@@ -31,7 +31,7 @@ module ButtonDriver(
 						out <= 1'b1;
 					end
 				DEPRESSED_BLOCK:
-					if (timer == 1 << 8)
+					if (timer >= 1 << 8)
 						state <= WAIT;
 					else begin
 						timer <= timer + 23'b1;

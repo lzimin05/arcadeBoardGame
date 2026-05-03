@@ -17,7 +17,7 @@ module snake #(
 	 input logic commandAck,
     output logic request_exit,
     output logic game_over,
-    output logic [7:0] score,
+    output logic [11:0] score,
     output logic [8:0] snake_len,
     output logic [4:0] snake_x [0:MAX_SNAKE],
     output logic [3:0] snake_y [0:MAX_SNAKE],
@@ -187,8 +187,7 @@ module snake #(
 					DRAW_SCORE: begin
 						command <= 3'b100;
 						data <= {
-							24'b0,
-							2'b0,
+							10'b0,
 							score,
 							3'b000,
 							7'd32
@@ -223,7 +222,7 @@ module snake #(
 					end
 				
 					CHECK_COLLISION: begin
-						 if (collision_idx < snake_len && !collision_found) begin
+						 if (collision_idx < snake_len - 1 && !collision_found) begin
 							  if (future_x == snake_x[collision_idx] && future_y == snake_y[collision_idx]) begin
 									collision_found <= 1'b1; //столкнулся с телом
 							  end
@@ -264,7 +263,9 @@ module snake #(
 							game_over <= 1'b1;
 					end else begin
 						  if (future_x == food_x && future_y == food_y) begin
-								score <= score + 1'b1;
+								score[3:0]  <= (score[3:0] != 4'd9) ? score[3:0] + 1'b1 : 4'b0;
+							   score[7:4]  <= (score[7:4] != 4'd9) ? score[7:4] + (score[3:0] == 4'd9) : ((score[3:0] == 4'd9) ? 4'b0: score[7:4]);
+							   score[11:8] <= score[11:8] + ((score[7:4] == 4'd9) && (score[3:0] == 4'd9));
 								if (snake_len < MAX_SNAKE) begin
 									 snake_len <= snake_len + 1'b1;
 								end else begin

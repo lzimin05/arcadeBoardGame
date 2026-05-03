@@ -35,12 +35,7 @@ module GPUControlDevice(
 	logic [19:0]realNumbersCommands[14:0];
 	
 	logic [7:0]counter;
-	
-	BinDec dec (
-		.in(numberForShow),
-		.out(realNumbers)
-	);
-	
+
 	NumberProvider np1 (
 		.in(realNumbers[11:8]),
 		.positionX(numberForShowPosition[6:0] + 7'd0),
@@ -68,6 +63,7 @@ module GPUControlDevice(
 			commandAck <= 1'b1;
 			clearEn <= 1'b0;
 			clearMode <= 2'b00;
+			realNumbers <= 12'b0;
 		end else
 			unique case (state)
 				WAIT_COMMAND: begin
@@ -179,7 +175,7 @@ module GPUControlDevice(
 						end
 						if (command == 3'b100) begin
 							clearEn <= 1'b0;
-							numberForShow <= data[19:10];
+							realNumbers <= data[21:10];
 							numberForShowPosition <= data[9:0];
 						end
 						if (command == 3'b101) begin
