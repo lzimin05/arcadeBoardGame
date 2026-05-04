@@ -36,6 +36,7 @@ module top_game #(
 	 
 	logic [4:0]  system_status;
     logic [11:0]  score;
+	 logic [11:0] score_tetris;
     
     logic [8:0]  snake_len;
     logic [ADDR_MAX_RECORD_FOR_SNAKE-1:0] the_best_snake_record;
@@ -102,10 +103,12 @@ module top_game #(
 	 ButtonDriver bd5(.rst(rst), .clk(clk), .in(buttons_in[4]), .out(leds[4]));
 	 ButtonDriver bd6(.rst(rst), .clk(clk), .in(buttons_in[5]), .out(leds[5]));
 
-    ButtonDriver select_btn(.rst(rst), .clk(clk), in(SELECT), .out(select));
-    ButtonDriver home_btn(.rst(rst), .clk(clk), in(HOME), .out(home));
+    ButtonDriver select_btn(.rst(rst), .clk(clk), .in(SELECT), .out(select));
+    ButtonDriver home_btn(.rst(rst), .clk(clk), .in(HOME), .out(home));
     
-    assign snake_rst = rst || (system_status == 5'd0 || system_status == 5'd2); 
+	 // сброс для обеих игр
+    assign snake_rst = rst || (system_status == 5'd0 || (system_status == 5'd2 && selected_game != 2'd0)); 
+    assign tetris_rst = rst || (system_status == 5'd0 || (system_status == 5'd2 && selected_game != 2'd1)); 
 	 
 	 logic [5:0]buttons;
 	 assign buttons = leds;
