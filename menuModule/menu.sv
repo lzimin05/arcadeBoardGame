@@ -150,7 +150,7 @@ module menu #(
 					
 				CLR_GAME: begin
 					command <= 3'b000;
-					data <= selected_game == 2'b00 ? 32'b1 : 0;
+					data <= selected_game == 2'b00 ? 32'b1 : 32'b10;
 					commandCS <= 1'b1;
 				end
 				

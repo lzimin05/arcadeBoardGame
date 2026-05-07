@@ -212,7 +212,7 @@ function void get_piece(input [2:0] t, input [1:0] r, input signed [5:0] px, inp
                         end
                     end
                     if (lines_cleared > 0) begin
-                        if (score[7:4] + lines_cleared >= 10) begin
+                        if (score[7:4] + lines_cleared >= 10) begin	
                             score[7:4] <= score[7:4] + lines_cleared - 4'd10;
                             score[11:8] <= score[11:8] + 4'd1;
                         end else begin

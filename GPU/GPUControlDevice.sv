@@ -326,6 +326,19 @@ module GPUControlDevice(
 										)
 									)
 							};
+						end else if (clearMode == 2'b10) begin
+							pxlCommand <= {
+								clearX, 
+								clearY,
+								2'b00, 
+								((clearX >= 20 && clearX <= 22) || (clearX >= 69 && clearX <= 71))
+									? 8'b11111111
+									: (
+										((clearY == 5) && (clearX >= 23 && clearX <= 68)) 
+											? 8'b11100000
+											: 8'b0
+									)
+							};
 						end else
 							pxlCommand <= {
 								clearX, 
