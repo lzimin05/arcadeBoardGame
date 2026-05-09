@@ -92,10 +92,10 @@ module top_game #(
 	 
 	logic rst;
 
-    logic select; //кнопка джойстика
+    logic select; //кнопка джойстикаыыы
     logic home;   //внешняя 
 
-	 ButtonDriver bd0(.rst(rst), .clk(clk), .in(inrst), .out(rst));
+	 ButtonDriver bd0(.rst(rst), .clk(clk), .in(!inrst), .out(rst));
 	 ButtonDriver bd1(.rst(rst), .clk(clk), .in(buttons_in[0]), .out(leds[0]));
 	 ButtonDriver bd2(.rst(rst), .clk(clk), .in(buttons_in[1]), .out(leds[1]));
 	 ButtonDriver bd3(.rst(rst), .clk(clk), .in(buttons_in[2]), .out(leds[2]));
