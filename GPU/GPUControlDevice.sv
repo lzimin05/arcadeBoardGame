@@ -331,13 +331,13 @@ module GPUControlDevice(
 								clearX, 
 								clearY,
 								2'b00, 
-								((clearX >= 20 && clearX <= 22) || (clearX >= 69 && clearX <= 71))
-									? 8'b11111111
-									: (
-										((clearY == 5) && (clearX >= 23 && clearX <= 68)) 
-											? 8'b11100000
-											: 8'b0
-									)
+							((clearX >= 21 && clearX <= 23) || (clearX >= 64 && clearX <= 66))
+    ? 8'b11111111
+    : (
+        ((clearY == 5) && (clearX >= 21 && clearX <= 66)) 
+            ? 8'b11110000
+            : 8'b0
+    )
 							};
 						end else
 							pxlCommand <= {

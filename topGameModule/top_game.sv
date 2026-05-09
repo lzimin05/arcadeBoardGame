@@ -139,7 +139,7 @@ module top_game #(
         .btn_home(buttons[2]),
         .snake_over(snake_over),
         .snake_exit(snake_exit),
-        .tetris_over(1'b0),
+        .tetris_over(tetris_over), // для game-over
         .tetris_exit(1'b0),
 		  .commandAck(commandAck),
         .snake_record(8'b0),
