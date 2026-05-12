@@ -17,7 +17,6 @@ module tetris #(
     output logic game_over,
     output logic [11:0] score,
     
-    output logic [119:0] tetris_mask,
     output logic [2:0] command,
     output logic [31:0] data,
     output logic commandCS
@@ -58,7 +57,6 @@ module tetris #(
     wire right_pulse = btn_right && !right_reg;
     wire down_pulse  = btn_down  && !down_reg; 
 
-    // Выносим переменные для синтезатора
     logic is_over_flag;
     logic found_line;
     logic [3:0] clear_index;
@@ -118,10 +116,8 @@ module tetris #(
         end
     end
 
-    // Идеальный FPGA-сброс (асинхронный + синхронный)
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            // 1. Асинхронный сброс (кнопка на плате)
             state <= S_IDLE; game_over <= 0; score <= 12'h000; commandCS <= 0; full_redraw <= 1;
             tick_pending <= 0; left_pending <= 0; right_pending <= 0; up_pending <= 0; down_pending <= 0;
             for (int i=0; i<GRID_H; i++) land[i] <= '0;
@@ -129,14 +125,12 @@ module tetris #(
             cur_x <= 4; cur_y <= 0; cur_type <= 0; cur_rot <= 0;
         end else begin
             if (!run) begin
-                // 2. Синхронный сброс (когда меню выходит из игры)
                 state <= S_IDLE; game_over <= 0; score <= 12'h000; commandCS <= 0; full_redraw <= 1;
                 tick_pending <= 0; left_pending <= 0; right_pending <= 0; up_pending <= 0; down_pending <= 0;
                 for (int i=0; i<GRID_H; i++) land[i] <= '0;
                 for (int i=0; i<4; i++) begin prev_x[i] <= '0; prev_y[i] <= -6'd1; end 
                 cur_x <= 4; cur_y <= 0; cur_type <= 0; cur_rot <= 0;
             end else if (!game_over) begin
-                // 3. Основная логика игры
                 
                 if (game_tick) tick_pending <= 1;
                 if (left_pulse) left_pending <= 1;
@@ -316,7 +310,6 @@ module tetris #(
                     end
                 endcase
             end else begin
-                // Когда игра завершилась, просто удерживаем флаг
                 game_over <= 1;
                 commandCS <= 0;
             end
