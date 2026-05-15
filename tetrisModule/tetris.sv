@@ -2,7 +2,7 @@
 
 module tetris #(
     parameter GRID_W = 10,
-    parameter GRID_H = 11, // Высота 11, чтобы не пересекаться с дном стакана
+    parameter GRID_H = 11, 
     parameter SPEED_THRESHOLD = 25000000
 )(
     input  logic clk,
@@ -75,12 +75,12 @@ module tetris #(
         case (t)
             0: begin if (r[0]) begin ox='{px, px, px, px}; oy='{py-1, py, py+1, py+2}; end else begin ox='{px-1, px, px+1, px+2}; oy='{py, py, py, py}; end end
             1: begin ox='{px, px+1, px, px+1}; oy='{py, py, py+1, py+1}; end
-            2: begin
+            2: begin // T
                 if(r==0)      begin ox='{px, px-1, px+1, px}; oy='{py, py, py, py+1}; end
                 else if(r==1) begin ox='{px, px, px+1, px}; oy='{py, py-1, py, py+1}; end
                 else if(r==2) begin ox='{px, px-1, px+1, px}; oy='{py, py, py, py-1}; end
-                else          begin ox='{px, px-1, px, px};   oy='{py, py-1, py, py+1}; end
-            end
+                else          begin ox='{px, px, px-1, px};   oy='{py, py-1, py, py+1}; end
+            end	
             3: begin
                 if(r[0]) begin ox='{px, px, px+1, px+1}; oy='{py-1, py, py, py+1}; end
                 else     begin ox='{px, px+1, px-1, px}; oy='{py, py+1, py, py+1}; end

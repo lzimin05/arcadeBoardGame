@@ -1,0 +1,47 @@
+# Copyright (C) 2020  Intel Corporation. All rights reserved.
+# Your use of Intel Corporation's design tools, logic functions 
+# and other software and tools, and any partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Intel Program License 
+# Subscription Agreement, the Intel Quartus Prime License Agreement,
+# the Intel FPGA IP License Agreement, or other applicable license
+# agreement, including, without limitation, that your use is for
+# the sole purpose of programming logic devices manufactured by
+# Intel and sold by Intel or its authorized distributors.  Please
+# refer to the applicable agreement for further details, at
+# https://fpgasoftware.intel.com/eula.
+
+# Quartus Prime Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition
+# File: /home/kostya/sem6/curse_work/arcadeBoardGame/arcadeBoardGame.csv
+# Generated on: Fri May 15 10:27:47 2026
+
+# Note: The column header names should not be changed if you wish to import this .csv file into the Quartus Prime software.
+
+To,Direction,Location,I/O Bank,VREF Group,I/O Standard,Reserved,Current Strength,Slew Rate,Differential Pair,Strict Preservation
+ADC_CS_N,Output,PIN_A10,7,B7_N0,,,,,,
+ADC_SADDR,Output,PIN_B10,7,B7_N0,,,,,,
+ADC_SCLK,Output,PIN_B14,7,B7_N0,,,,,,
+ADC_SDAT,Input,PIN_A9,7,B7_N0,,,,,,
+HOME,Input,PIN_M16,5,B5_N0,,,,,,
+SELECT,Input,PIN_E15,6,B6_N0,,,,,,
+buttons_in[5],Input,PIN_E6,8,B8_N0,,,,,,
+buttons_in[4],Input,PIN_D11,7,B7_N0,,,,,,
+buttons_in[3],Input,PIN_F8,8,B8_N0,,,,,,
+buttons_in[2],Input,PIN_E8,8,B8_N0,,,,,,
+buttons_in[1],Input,PIN_E7,8,B8_N0,,,,,,
+buttons_in[0],Input,PIN_D8,8,B8_N0,,,,,,
+clk,Input,PIN_R8,3,B3_N0,,,,,,
+inrst,Input,PIN_E1,1,B1_N0,,,,,,
+leds[5],Output,PIN_F3,1,B1_N0,,,,,,
+leds[4],Output,PIN_D1,1,B1_N0,,,,,,
+leds[3],Output,PIN_A11,7,B7_N0,,,,,,
+leds[2],Output,PIN_B13,7,B7_N0,,,,,,
+leds[1],Output,PIN_A13,7,B7_N0,,,,,,
+leds[0],Output,PIN_A15,7,B7_N0,,,,,,
+screenCE,Output,PIN_A12,7,B7_N0,,,,,,
+screenClk,Output,PIN_E11,7,B7_N0,,,,,,
+screenDC,Output,PIN_E10,7,B7_N0,,,,,,
+screenDIn,Output,PIN_C11,7,B7_N0,,,,,,
+screenRst,Output,PIN_B11,7,B7_N0,,,,,,
